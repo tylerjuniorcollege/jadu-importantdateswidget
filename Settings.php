@@ -1,3 +1,13 @@
+<?php 
+	// Template for Semester Types.
+	$semester_array = array(0 => 'Fall',
+							1 => 'Winter',
+							2 => 'Spring',
+							3 => 'May',
+							4 => 'Summer');
+
+	
+?>
 <table class="form_table" id="tbl_widget_content">
 	<input type="hidden" value="<?php print $DOMAIN; ?>" id="DOMAIN" />
 	<tbody>

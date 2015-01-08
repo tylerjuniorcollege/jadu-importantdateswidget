@@ -6,7 +6,7 @@
 	include_once('websections/JaduHomepageWidgetSettings.php');
 	include_once('ext/json.php');
 	
-	$allPromisesWidgetLinks = array();
+	$allEvents = array();
 	$widgetSettingsFind = array('_apos_','_amp_','_eq_','_hash_','_ques_','_perc_');
 	$widgetSettingsReplace = array("'","&",'=','#','?','%');
 
@@ -97,15 +97,15 @@
 	}
 
 	foreach ($tempLinks as $index => $link) {
-		$allPromisesWidgetLinks[] = array($tempButtonTitles[$index], $tempButtonSubTitles[$index], $tempLinks[$index], $tempLinkTitles[$index], $tempImageSrc[$index]);
+		$allEvents[] = array($tempButtonTitles[$index], $tempButtonSubTitles[$index], $tempLinks[$index], $tempLinkTitles[$index], $tempImageSrc[$index]);
 	}
 
-	if (!empty($allPromisesWidgetLinks)) {
+	if (!empty($allEvents)) {
 ?>
 <div class="promisesWidget" id="promisesWidget">
 	<ul class="promisesTabs">
 <?php
-		foreach ($allPromisesWidgetLinks as $index => &$promisesWidgetLink) {
+		foreach ($allEvents as $index => &$promisesWidgetLink) {
 ?>
 			<li id="promisesTab<?php print $index + 1;?>">
 				<a href="#">
@@ -119,7 +119,7 @@
 	</ul>
 	<ul class="promisesContent">
 <?php
-		foreach ($allPromisesWidgetLinks as $index => &$promisesWidgetLink) {
+		foreach ($allEvents as $index => &$promisesWidgetLink) {
 ?>
 			<li id="promisesContent<?php print $index + 1;?>" style="display:<?php ($index == 0) ? print 'block' : print 'none'; ?>;">
 <!--[if lt IE 8]>
@@ -147,7 +147,7 @@
 				try {
 					var promisesFader = new PromisesFader('promisesWidget', {interval: <?php print $timer; ?>, lazy: true, effectDuration: 1.0, effectFps: 35});
 <?php
-			foreach ($allPromisesWidgetLinks as $index => &$promisesWidgetLink) {
+			foreach ($allEvents as $index => &$promisesWidgetLink) {
 ?>
 					promisesFader.addImage('<?php print getCurrentProtocolSiteRootURL(); ?>/images/<?php print $promisesWidgetLink[4]; ?>');
 <?php 

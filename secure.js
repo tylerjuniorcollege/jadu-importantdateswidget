@@ -1,107 +1,100 @@
 if ($("tbl_widget_content").getElementsByTagName("tfoot")[0]) {
 	$("tbl_widget_content").getElementsByTagName("tfoot")[0].style.display = "none";
 }	
-var currentImageEdit = -1;
+var currentEventEdit = -1;
 
-var widgetImages = new Array();
+var widgetEvents = new Array();
 var oldsave = $("saveWidgetProperty").onclick;
 
 if (typeof $("saveWidgetProperty").onclick != "function") {
-    $("saveWidgetProperty").onclick = commitwidgetImages;
+    $("saveWidgetProperty").onclick = commitwidgetEvents;
 }
 else {
     $("saveWidgetProperty").onclick = function ()
     {
-        commitwidgetImages();
+        commitWidgetEvents();
         oldsave();
     }
 }
 
-// Load image carousel widget images into sub table
-
-fetchImages();
-iterateImages();
-$('image_carousel_widget_images').show();
 
 
-function addWidgetImage ()
+fetchEvents();
+iterateEvents();
+$('date_widget_dates').show();
+
+
+function addWidgetEvent ()
 {
-    currentImageEdit = -1;
-    $("image_carousel_image").value = "";
-	$("image_carousel_imagei").src= "../images/no_image.gif";
-    $("image_carousel_button_title").value = "";
-	$("image_carousel_button_subtitle").value = "";
-    $("image_carousel_link").value = "";
-    $("image_carousel_link_title").value = "";
-    $("lb_widget_content").getElementsByTagName("tfoot")[0].style.display = "";
-    $("image_carousel_widget_images").style.display = "none";
-    $("widgetImageDelete").style.display = "none";
+    currentEventEdit = -1;
+    $("event_date").value = "";
+	$("event_name").value = "";
+    $("event_semester").value = "";
+    $(".event_terms").value = "";
+    $("tbl_widget_content").getElementsByTagName("tfoot")[0].style.display = "";
+    $("date_widget_dates").style.display = "none";
+    $("widgetEventDelete").style.display = "none";
 }
 
-function editWidgetImage (widgetImageID)
+function editWidgetEvent (widgetEventId)
 {	
-	currentImageEdit = widgetImageID;
+	currentEventEdit = widgetEventId;
 	
-    if (widgetImages[currentImageEdit][0] != null) {
-        $("image_carousel_image").value = widgetImages[currentImageEdit][0];
+    if (widgetEvents[currentEventEdit][0] != null) {
+        $("event_date").value = widgetEvents[currentEventEdit][1];
     }
-    if (widgetImages[currentImageEdit][0] != null) {
-        $("image_carousel_imagei").src = 'http://'+$('DOMAIN').value+'/images/'+widgetImages[currentImageEdit][0];
+	 if (widgetEvents[currentEventEdit][1] != null) {
+        $("event_name").value = widgetEvents[currentEventEdit][2];
     }
-    if (widgetImages[currentImageEdit][1] != null) {
-        $("image_carousel_button_title").value = widgetImages[currentImageEdit][1];
+    if (widgetEvents[currentEventEdit][2] != null) {
+        $("event_semester").value = widgetEvents[currentEventEdit][3];
     }
-	 if (widgetImages[currentImageEdit][2] != null) {
-        $("image_carousel_button_subtitle").value = widgetImages[currentImageEdit][2];
+    if (widgetEvents[currentEventEdit][3] != null) {
+        $(".event_terms").value = widgetEvents[currentEventEdit][4];
     }
-    if (widgetImages[currentImageEdit][3] != null) {
-        $("image_carousel_link").value = widgetImages[currentImageEdit][3];
-    }
-    if (widgetImages[currentImageEdit][4] != null) {
-        $("image_carousel_link_title").value = widgetImages[currentImageEdit][4];
-    }
-    $("lb_widget_content").getElementsByTagName("tfoot")[0].style.display = "";
-    $("image_carousel_widget_images").style.display = "none";
-    $("widgetImageDelete").style.display = "";
+    $("tbl_widget_content").getElementsByTagName("tfoot")[0].style.display = "";
+    $("date_widget_dates").style.display = "none";
+    $("widgetEventDelete").style.display = "";
 }
 
-function saveWidgetImage ()
+function saveWidgetEvent ()
 {
 	// check all required fields have been entered
 	var errors = false;
 	
-	if ($("image_carousel_button_title").value.length == 0) {
+	if ($("event_date").value.length == 0) {
 		errors = true;
 	}
-	else if ($("image_carousel_button_subtitle").value.length == 0) {
+	else if ($("event_name").value.length == 0) {
 		errors = true;
 	}
-        else if ($("image_carousel_link").value.length == 0) {
+    else if ($("event_semester").value.length == 0) {
 		errors = true;
 	}
-        else if ($("image_carousel_link_title").value.length == 0) {
+    else if ($("event_year").value.length == 0) {
+        errors = true;
+    }
+    else if ($$(".event_terms").value.length == 0) {
 		errors = true;
 	}
 	
 	
 	if (!errors) {
-	    if (currentImageEdit == -1) {
-	        widgetImages.push(new Array($("image_carousel_image").value, $("image_carousel_button_title").value, $("image_carousel_button_subtitle").value, $("image_carousel_link").value, $("image_carousel_link_title").value));
+	    if (currentEventEdit == -1) {
+	        widgetEvents.push(new Array($("event_year").value, $("event_date").value, $("event_name").value, $("event_semester").value, $$(".event_terms").value));
 	        // add new row
-	        addImageRow (widgetImages.length - 1, widgetImages[widgetImages.length - 1]);
+	        addImageRow (widgetEvents.length - 1, widgetEvents[widgetEvents.length - 1]);
 	    }
 	    else {
-	        widgetImages[currentImageEdit][0] = $("image_carousel_image").value;
-	        widgetImages[currentImageEdit][1] = $("image_carousel_button_title").value;
-			widgetImages[currentImageEdit][2] = $("image_carousel_button_subtitle").value;
-	        widgetImages[currentImageEdit][3] = $("image_carousel_link").value;
-			widgetImages[currentImageEdit][4] = $("image_carousel_link_title").value;
-	        $("widgetImageText" + currentImageEdit).title = $("image_carousel_button_title").value;
-	        $("widgetImageText" + currentImageEdit).innerHTML = $("image_carousel_button_title").value;
+            widgetEvents[currentEventEdit][0] = $("event_year").value;
+	        widgetEvents[currentEventEdit][1] = $("event_date").value;
+			widgetEvents[currentEventEdit][2] = $("event_name").value;
+	        widgetEvents[currentEventEdit][3] = $("event_semester").value;
+			widgetEvents[currentEventEdit][4] = $$(".event_terms").value;
 	    }
 	
-	    $("lb_widget_content").getElementsByTagName("tfoot")[0].style.display = "none";
-	    $("image_carousel_widget_images").style.display = "";
+	    $("tbl_widget_content").getElementsByTagName("tfoot")[0].style.display = "none";
+	    $("date_widget_dates").style.display = "";
 	}
 	else {
 		alert("Please enter all required field!");	
@@ -110,44 +103,44 @@ function saveWidgetImage ()
 
 
 
-function deleteWidgetImage ()
+function deleteWidgetEvent ()
 {
-    widgetImages[currentImageEdit] = -1;
+    widgetEvents[currentEventEdit] = -1;
     
-    $("widgetImageText" + currentImageEdit).parentNode.parentNode.parentNode.removeChild($("widgetImageText" + currentImageEdit).parentNode.parentNode);
+    $(currentEventEdit).parentNode.parentNode.parentNode.removeChild($(currentEventEdit).parentNode.parentNode);
     
-    $("lb_widget_content").getElementsByTagName("tfoot")[0].style.display = "none";
-    $("image_carousel_widget_images").style.display = ""; 
+    $("tbl_widget_content").getElementsByTagName("tfoot")[0].style.display = "none";
+    $("date_widget_dates").style.display = ""; 
 }
 
-function closeSlide ()
+function closeEvent ()
 {
-    $("lb_widget_content").getElementsByTagName("tfoot")[0].style.display = "none";
-    $("image_carousel_widget_images").style.display = ""; 
+    $("tbl_widget_content").getElementsByTagName("tfoot")[0].style.display = "none";
+    $("date_widget_dates").style.display = ""; 
 }
 
-function addImageRow (ImageID, ImageObj)
+function addEventRow (EventID, EventObj)
 {
     var tr = document.createElement("tr");
     var td = document.createElement("td");
     td.className = "label_cell";
     var aLink = document.createElement("a");
-    aLink.id = "widgetImageText" + ImageID;
+    aLink.id = "widgetEvent" + EventID;
     aLink.href = "#";
     aLink.onclick = function ()
     {
-        editWidgetImage(this.id.replace(/widgetImageText/gi, ""));
+        editWidgetImage(this.id.replace(/widgetEvent/gi, ""));
         return false;
     }
-    aLink.innerHTML = ImageObj[1];
-    aLink.title = ImageObj[1];
+    aLink.innerHTML = EventObj[2];
+    aLink.title = EventObj[2];
     td.appendChild(aLink);
     tr.appendChild(td);
     td = document.createElement("td");
     td.className = "data_cell";
     var moveButton = document.createElement("a");
     moveButton.href = "#";
-    moveButton.id = "widgetLinkDownText" + ImageID;
+    moveButton.id = "widgetLinkDownText" + EventID;
     moveButton.innerHTML = "Move Down";
     moveButton.onclick = function ()
     {
@@ -158,7 +151,7 @@ function addImageRow (ImageID, ImageObj)
 	td.appendChild(document.createTextNode("\u00a0"));
     moveButton = document.createElement("a");
     moveButton.href = "#";
-    moveButton.id = "widgetLinkUpText" + ImageID;
+    moveButton.id = "widgetLinkUpText" + EventID;
     moveButton.innerHTML = "Move Up";
     moveButton.onclick = function ()
     {
@@ -167,76 +160,42 @@ function addImageRow (ImageID, ImageObj)
     }
     td.appendChild(moveButton);
     tr.appendChild(td);
-    $("image_carousel_widget_images").appendChild(tr);
+    $("date_widget_dates").appendChild(tr);
 }
 
-function iterateImages ()
+function iterateEvents ()
 {
-    for (var i = 0; i < widgetImages.length; i++) {
-        addImageRow(i, widgetImages[i]);
+    for (var i = 0; i < widgetEvents.length; i++) {
+        addImageRow(i, widgetEvents[i]);
     }    
 }
 
-function fetchImages ()
+function fetchEvents ()
 {
-    widgetImages.clear();
+    widgetEvents.clear();
     for (var wImage in widgetItems[activeWidget].settings) {
         if (wImage.indexOf("image") >= 0 && wImage.indexOf("buttonTitle") >= 0) {
-            widgetImages.push(new Array(widgetItems[activeWidget].settings[wImage.replace(/buttonTitle/gi, "imageSrc")], widgetItems[activeWidget].settings[wImage], widgetItems[activeWidget].settings[wImage.replace(/buttonTitle/gi, "buttonSubtitle")], widgetItems[activeWidget].settings[wImage.replace(/buttonTitle/gi, "link")], widgetItems[activeWidget].settings[wImage.replace(/buttonTitle/gi, "link_title")]));
+            widgetEvents.push(new Array(widgetItems[activeWidget].settings[wImage.replace(/buttonTitle/gi, "imageSrc")], widgetItems[activeWidget].settings[wImage], widgetItems[activeWidget].settings[wImage.replace(/buttonTitle/gi, "buttonSubtitle")], widgetItems[activeWidget].settings[wImage.replace(/buttonTitle/gi, "link")], widgetItems[activeWidget].settings[wImage.replace(/buttonTitle/gi, "link_title")]));
         }
     }	
 }
 
-function commitwidgetImages ()
+function commitWidgetEvents ()
 {
     widgetItems[activeWidget].settings = new Object();
 
-    for (var i = 0; i < widgetImages.length; i++) {
-    	if (widgetImages[i][0] != undefined) {
-	        widgetItems[activeWidget].settings["image" + i + "imageSrc"] = widgetImages[i][0];
-	        widgetItems[activeWidget].settings["image" + i + "buttonTitle"] = widgetImages[i][1];
-			widgetItems[activeWidget].settings["image" + i + "buttonSubtitle"] = widgetImages[i][2];
-	        widgetItems[activeWidget].settings["image" + i + "link"] = widgetImages[i][3];
-	        widgetItems[activeWidget].settings["image" + i + "link_title"] = widgetImages[i][4];
+    for (var i = 0; i < widgetEvents.length; i++) {
+    	if (widgetEvents[i][0] != undefined) {
+	        widgetItems[activeWidget].settings["image" + i + "imageSrc"] = widgetEvents[i][0];
+	        widgetItems[activeWidget].settings["image" + i + "buttonTitle"] = widgetEvents[i][1];
+			widgetItems[activeWidget].settings["image" + i + "buttonSubtitle"] = widgetEvents[i][2];
+	        widgetItems[activeWidget].settings["image" + i + "link"] = widgetEvents[i][3];
+	        widgetItems[activeWidget].settings["image" + i + "link_title"] = widgetEvents[i][4];
     	}
     }
 
-    $("image_carousel_image").parentNode.removeChild($("image_carousel_image"));
-    $("image_carousel_link").parentNode.removeChild($("image_carousel_link"));
-	$("image_carousel_link_title").parentNode.removeChild($("image_carousel_link_title"));
-    $("image_carousel_button_title").parentNode.removeChild($("image_carousel_button_title"));
-    $("image_carousel_button_subtitle").parentNode.removeChild($("image_carousel_button_subtitle"));
-}
-
-function moveUp (widgetImageID)
-{
-    var tempLink = null;
-    if (widgetImageID > 0) {
-        tempLink = widgetImages[widgetImageID - 1];
-        widgetImages[widgetImageID - 1] = widgetImages[widgetImageID];
-        widgetImages[widgetImageID] = tempLink;
-        if ( $("image_carousel_widget_images").hasChildNodes() ) {
-            while ( $("image_carousel_widget_images").childNodes.length >= 1 ) {
-                $("image_carousel_widget_images").removeChild( $("image_carousel_widget_images").firstChild );       
-            } 
-        }
-        iterateImages();
-    }
-}
-
-function moveDown (widgetImageID)
-{
-    var tempLink = null;
-    widgetImageID = parseInt(widgetImageID);
-    if (widgetImageID < widgetImages.length - 1) {
-        tempLink = widgetImages[widgetImageID + 1];
-        widgetImages[widgetImageID + 1] = widgetImages[widgetImageID];
-        widgetImages[widgetImageID] = tempLink;
-        if ($("image_carousel_widget_images").hasChildNodes()) {
-	        while ($("image_carousel_widget_images").childNodes.length >= 1) {
-                $("image_carousel_widget_images").removeChild($("image_carousel_widget_images").firstChild);       
-            } 
-        }
-        iterateImages();
-    }
+    $("event_semester").parentNode.removeChild($("event_semester"));
+	$(".event_terms").parentNode.removeChild($(".event_terms"));
+    $("event_date").parentNode.removeChild($("event_date"));
+    $("event_name").parentNode.removeChild($("event_name"));
 }

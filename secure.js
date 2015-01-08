@@ -30,7 +30,7 @@ function addWidgetEvent ()
     $("event_date").value = "";
 	$("event_name").value = "";
     $("event_semester").value = "";
-    $(".event_terms").value = "";
+    $$(".event_terms").value = "";
     $("tbl_widget_content").getElementsByTagName("tfoot")[0].style.display = "";
     $("date_widget_dates").style.display = "none";
     $("widgetEventDelete").style.display = "none";
@@ -39,18 +39,21 @@ function addWidgetEvent ()
 function editWidgetEvent (widgetEventId)
 {	
 	currentEventEdit = widgetEventId;
-	
-    if (widgetEvents[currentEventEdit][0] != null) {
+	if (widgetEvents[currentEventEdit][0] != null) {
+        $("event_year").value = widgetEvents[currentEventEdit][0];
+    }
+
+    if (widgetEvents[currentEventEdit][1] != null) {
         $("event_date").value = widgetEvents[currentEventEdit][1];
     }
-	 if (widgetEvents[currentEventEdit][1] != null) {
+	if (widgetEvents[currentEventEdit][2] != null) {
         $("event_name").value = widgetEvents[currentEventEdit][2];
     }
-    if (widgetEvents[currentEventEdit][2] != null) {
+    if (widgetEvents[currentEventEdit][3] != null) {
         $("event_semester").value = widgetEvents[currentEventEdit][3];
     }
-    if (widgetEvents[currentEventEdit][3] != null) {
-        $(".event_terms").value = widgetEvents[currentEventEdit][4];
+    if (widgetEvents[currentEventEdit][4] != null) {
+        $$(".event_terms").value = widgetEvents[currentEventEdit][4];
     }
     $("tbl_widget_content").getElementsByTagName("tfoot")[0].style.display = "";
     $("date_widget_dates").style.display = "none";
@@ -83,7 +86,7 @@ function saveWidgetEvent ()
 	    if (currentEventEdit == -1) {
 	        widgetEvents.push(new Array($("event_year").value, $("event_date").value, $("event_name").value, $("event_semester").value, $$(".event_terms").value));
 	        // add new row
-	        addImageRow (widgetEvents.length - 1, widgetEvents[widgetEvents.length - 1]);
+	        addEventRow (widgetEvents.length - 1, widgetEvents[widgetEvents.length - 1]);
 	    }
 	    else {
             widgetEvents[currentEventEdit][0] = $("event_year").value;
@@ -166,7 +169,7 @@ function addEventRow (EventID, EventObj)
 function iterateEvents ()
 {
     for (var i = 0; i < widgetEvents.length; i++) {
-        addImageRow(i, widgetEvents[i]);
+        addEventRow(i, widgetEvents[i]);
     }    
 }
 
@@ -186,16 +189,16 @@ function commitWidgetEvents ()
 
     for (var i = 0; i < widgetEvents.length; i++) {
     	if (widgetEvents[i][0] != undefined) {
-	        widgetItems[activeWidget].settings["image" + i + "imageSrc"] = widgetEvents[i][0];
-	        widgetItems[activeWidget].settings["image" + i + "buttonTitle"] = widgetEvents[i][1];
-			widgetItems[activeWidget].settings["image" + i + "buttonSubtitle"] = widgetEvents[i][2];
-	        widgetItems[activeWidget].settings["image" + i + "link"] = widgetEvents[i][3];
-	        widgetItems[activeWidget].settings["image" + i + "link_title"] = widgetEvents[i][4];
+	        widgetItems[activeWidget].settings["event" + i + "event_year"] = widgetEvents[i][0];
+	        widgetItems[activeWidget].settings["event" + i + "event_date"] = widgetEvents[i][1];
+			widgetItems[activeWidget].settings["event" + i + "event_name"] = widgetEvents[i][2];
+	        widgetItems[activeWidget].settings["event" + i + "event_semester"] = widgetEvents[i][3];
+	        widgetItems[activeWidget].settings["event" + i + "event_term"] = widgetEvents[i][4];
     	}
     }
 
     $("event_semester").parentNode.removeChild($("event_semester"));
-	$(".event_terms").parentNode.removeChild($(".event_terms"));
+	$$(".event_terms").parentNode.removeChild($(".event_terms"));
     $("event_date").parentNode.removeChild($("event_date"));
     $("event_name").parentNode.removeChild($("event_name"));
 }

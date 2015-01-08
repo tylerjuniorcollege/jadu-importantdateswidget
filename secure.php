@@ -1,28 +1,38 @@
 <?php 
 	// Template for Semester Types.
-	$semester_array = array(0 => 'Fall',
-							1 => 'Winter',
-							2 => 'Spring',
-							3 => 'May',
-							4 => 'Summer');
-
+	$semesters = array(0 => 'Fall',
+					   1 => 'Winter',
+					   2 => 'Spring',
+					   3 => 'May',
+					   4 => 'Summer');
 	
+	$terms = array(
+		0 => '16 Week',
+		1 => '12 Week',
+		3 => '8 Week'
+	);
+
+	$year = date("Y");
+	$years = array();
+	for($i = 0; $i < 3; $i++) {
+		$years[] = ($year + $i);
+	}
 ?>
 <table class="form_table" id="tbl_widget_content">
 	<input type="hidden" value="<?php print $DOMAIN; ?>" id="DOMAIN" />
 	<tbody>
-		<tr>
+		<!--<tr>
 			<td class="label_cell">Timer <em>(in seconds)</em></td>
 			<td class="data_cell"><input type="text" value="6.5" id="image_carousel_timer" class="field" size="12"></td>
-		</tr>	
+		</tr>-->
 		<tr>
 			<td class="label_cell"></td>
-			<td class="data_cell"><input type="button" onclick="addWidgetImage();" class="button" value="Add Slide"></td>
+			<td class="data_cell"><input type="button" onclick="addWidgetEvent();" class="button" value="Add Event"></td>
 		</tr>		
 		<tr>
 			<td colspan="2">
 				<table class="form_table">
-					<tbody id="image_carousel_widget_images" style="display: none;">
+					<tbody id="date_widget_dates" style="display: none;">
 					
 					</tbody>
 				</table>
@@ -31,37 +41,40 @@
 	</tbody>
    	<tfoot style="">
 		<tr>
-			<td class="label_cell">Image</td>
+			<td class="label_cell">Event Date</td>
+			<td class="data_cell"><input type="text" value="" id="event_date" class="field" size="12"></td>
+		</tr>
+		<tr>
+			<td class="label_cell">Event Name</td>
+			<td class="data_cell"><input type="text" value="" id="event_name" class="field" size="12"></td>
+		</tr>
+		<tr>
+			<td class="label_cell">Semester</td>
+			<td class="data_cell"><select id="event_semester">
+				<?php foreach($semesters as $id => $semester): ?>
+					<option value="<?=$id ?>"><?=$semester ?></option>
+				<?php endforeach; ?>
+			</select></td>
+		</tr>
+		<tr>
+			<td class="label_cell">Year</td>
+			<td class="data_cell"><select id="event_year">
+				<?php foreach($years as $year): ?>
+					<option value="<?=$year; ?>"><?=$year; ?></option>
+				<?php endforeach; ?>
+			</select></td>
+		</tr>
+		<tr>
+			<td class="label_cell">Term</td>
+			<td class="data_cell"><?php foreach($terms as $termid => $term): ?>
+				<input type="checkbox" class="event_terms" id="term-<?=$termid; ?>" value="<?=$termid; ?>"><?=$term; ?> &nbsp;
+			<?php endforeach; ?></td>
+		</tr>	
+		<tr>
+			<td class="label_cell"><input type="button" onclick="deleteWidgetEvent()" value="Delete Event" id="widgetEventDelete" class="button" style="display: none;"></td>
 			<td class="data_cell">
-				<input type="hidden" onchange="$('image_carousel_imagei').src = 'http://' + DOMAIN + '/images/' + this.value;" value="" id="image_carousel_image">
-				<input type="button" onclick="return loadLightbox('image_manager/image_manager', 'lb2', 'mode=lb2&imagePreviewID=image_carousel_imagei&imageFilenameID=image_carousel_image');" value="Image Library" class="button">
-			</td>
-		</tr>
-		<tr>
-			<td class="label_cell">Preview</td>
-			<td class="data_cell"><img src="../images/no_image.gif" class="img_preview" id="image_carousel_imagei"></td>
-		</tr>
-		<tr>
-			<td class="label_cell">Button Title*</td>
-			<td class="data_cell"><input type="text" value="" id="image_carousel_button_title" class="field" size="12"></td>
-		</tr>
-		<tr>
-			<td class="label_cell">Button Subtitle*</td>
-			<td class="data_cell"><input type="text" value="" id="image_carousel_button_subtitle" class="field" size="12"></td>
-		</tr>
-		<tr>
-			<td class="label_cell">Link*</td>
-			<td class="data_cell"><input type="text" value="" id="image_carousel_link" class="field" size="12"></td>
-		</tr>
-		<tr>
-			<td class="label_cell">Link Title*</td>
-			<td class="data_cell"><input type="text" value="" id="image_carousel_link_title" class="field" size="12"></td>
-		</tr>		
-		<tr>
-			<td class="label_cell"><input type="button" onclick="deleteWidgetImage()" value="Delete Slide" id="widgetImageDelete" class="button" style="display: none;"></td>
-			<td class="data_cell">
-				<input type="button" onclick="saveWidgetImage();" value="Save Slide" class="button">
-				<input type="button" onclick="closeSlide();" value="Close Slide" class="button">
+				<input type="button" onclick="saveWidgetEvent();" value="Save Event" class="button">
+				<input type="button" onclick="closeEvent();" value="Close Event" class="button">
 			</td>
 		</tr>
 	</tfoot>  	

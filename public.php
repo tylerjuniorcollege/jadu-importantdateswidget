@@ -70,9 +70,10 @@
 	$tempLinkTitles = array();
 	$tempButtonTitles = array();
 	$tempButtonSubTitles = array();
-	$timer = '6.5';
 	
 	if (!empty($settings)) {
+		var_dump($settings);
+		die();
 		foreach ($settings as $value) {
 			if (preg_match('/image([0-9]+)buttonTitle/i', $value->name, $matches)) {
 				$tempButtonTitles[$matches[1]] = $value->value;
@@ -137,9 +138,10 @@
 </div>
 <?php
 		if (!isset($indexPage) || $indexPage == false) {
+/* 
 ?>
 <script type="text/javascript">
-	/* <![CDATA[ */
+	/* <![CDATA[ 
 	(function(w) {
 		var src = '<?php print getStaticContentRootURL(); ?>/site/javascript/promisesFader.min.js',
 			id = 'js-promises-fader',
@@ -164,9 +166,9 @@
 			o.parentNode.insertBefore(s, o)
 		}(document,'script',callback,id));
 	})(window);
-	/* ]]> */
+	/* ]]> 
 </script>
-<?php
+<?php */
 		}
 	}
 ?>

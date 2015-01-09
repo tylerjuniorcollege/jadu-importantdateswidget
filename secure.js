@@ -52,9 +52,9 @@ function editWidgetEvent (widgetEventId)
     if (widgetEvents[currentEventEdit][3] != null) {
         $("event_semester").value = widgetEvents[currentEventEdit][3];
     }
-    if (widgetEvents[currentEventEdit][4] != null) {
+    /* if (widgetEvents[currentEventEdit][4] != null) {
         $$(".event_terms").value = widgetEvents[currentEventEdit][4];
-    }
+    } */
     $("tbl_widget_content").getElementsByTagName("tfoot")[0].style.display = "";
     $("date_widget_dates").style.display = "none";
     $("widgetEventDelete").style.display = "";
@@ -77,9 +77,17 @@ function saveWidgetEvent ()
     else if ($("event_year").value.length == 0) {
         errors = true;
     }
-    else if ($$(".event_terms").value.length == 0) {
-		errors = true;
-	}
+    
+    var checked = false;
+    $$(".event_terms").each(function(term) {
+        if ($(term).checked) {
+            checked = true;
+        }
+    });
+
+    if(!checked) {
+        errors = true;
+    }
 	
 	
 	if (!errors) {
@@ -93,7 +101,13 @@ function saveWidgetEvent ()
 	        widgetEvents[currentEventEdit][1] = $("event_date").value;
 			widgetEvents[currentEventEdit][2] = $("event_name").value;
 	        widgetEvents[currentEventEdit][3] = $("event_semester").value;
-			widgetEvents[currentEventEdit][4] = $$(".event_terms").value;
+			widgetEvents[currentEventEdit][4] = [];
+
+            $$(".event_terms").each(function(term) {
+                if ($(term).checked) {
+                    widgetEvents[currentEventEdit][4].push($(ele).value);
+                }
+            })
 	    }
 	
 	    $("tbl_widget_content").getElementsByTagName("tfoot")[0].style.display = "none";
@@ -126,13 +140,13 @@ function addEventRow (EventID, EventObj)
 {
     var tr = document.createElement("tr");
     var td = document.createElement("td");
-    td.className = "label_cell";
+    td.className = "data_cell";
     var aLink = document.createElement("a");
     aLink.id = "widgetEvent" + EventID;
     aLink.href = "#";
     aLink.onclick = function ()
     {
-        editWidgetImage(this.id.replace(/widgetEvent/gi, ""));
+        editWidgetEvent(this.id.replace(/widgetEvent/gi, ""));
         return false;
     }
     aLink.innerHTML = EventObj[2];
@@ -198,7 +212,7 @@ function commitWidgetEvents ()
     }
 
     $("event_semester").parentNode.removeChild($("event_semester"));
-	$$(".event_terms").parentNode.removeChild($(".event_terms"));
+	$$(".event_terms").parentNode.removeChild($$(".event_terms"));
     $("event_date").parentNode.removeChild($("event_date"));
     $("event_name").parentNode.removeChild($("event_name"));
 }

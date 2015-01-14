@@ -225,14 +225,18 @@ function fetchEvents ()
 {
     widgetEvents.clear();
     for (var wEvent in widgetItems[activeWidget].settings) {
-        console.log('Fetch Events:');
-        console.log(wEvent);
-        if (wEvent.indexOf("image") >= 0 && wEvent.indexOf("buttonTitle") >= 0) {
-            widgetEvents.push(new Array(widgetItems[activeWidget].settings[wEvent.replace(/buttonTitle/gi, "imageSrc")], 
-                                        widgetItems[activeWidget].settings[wEvent], 
-                                        widgetItems[activeWidget].settings[wEvent.replace(/buttonTitle/gi, "buttonSubtitle")], 
-                                        widgetItems[activeWidget].settings[wEvent.replace(/buttonTitle/gi, "link")], 
-                                        widgetItems[activeWidget].settings[wEvent.replace(/buttonTitle/gi, "link_title")]));
+        if (wEvent.indexOf("event_year") >= 0) {
+            var arr_id = wEvent.substring(0, wEvent.lastIndexOf("-"));
+            var term_arr = JSON.parse(widgetItems[activeWidget].settings[arr_id.replace(/event_year/gi, "event_terms")]);
+            console.log(term_arr);
+            widgetEvents.push(new Array(widgetItems[activeWidget].settings[arr_id], 
+                                        widgetItems[activeWidget].settings[arr_id.replace(/event_year/gi, "event_start_month")], 
+                                        widgetItems[activeWidget].settings[arr_id.replace(/event_year/gi, "event_start_day")],
+                                        widgetItems[activeWidget].settings[arr_id.replace(/event_year/gi, "event_end_month")],
+                                        widgetItems[activeWidget].settings[arr_id.replace(/event_year/gi, "event_end_day")], 
+                                        widgetItems[activeWidget].settings[arr_id.replace(/event_year/gi, "event_name")], 
+                                        widgetItems[activeWidget].settings[arr_id.replace(/event_year/gi, "event_semester")], 
+                                        term_arr));
         }
     }	
 }
@@ -243,14 +247,14 @@ function commitWidgetEvents ()
 
     for (var i = 0; i < widgetEvents.length; i++) {
     	if (widgetEvents[i][0] != undefined) {
-	        widgetItems[activeWidget].settings["event" + i + "event_year"] = widgetEvents[i][0];
-	        widgetItems[activeWidget].settings["event" + i + "event_start_month"] = widgetEvents[i][1];
-            widgetItems[activeWidget].settings["event" + i + "event_start_day"] = widgetEvents[i][2];
-            widgetItems[activeWidget].settings["event" + i + "event_end_month"] = widgetEvents[i][3];
-            widgetItems[activeWidget].settings["event" + i + "event_end_day"] = widgetEvents[i][4];
-			widgetItems[activeWidget].settings["event" + i + "event_name"] = widgetEvents[i][5];
-	        widgetItems[activeWidget].settings["event" + i + "event_semester"] = widgetEvents[i][6];
-	        widgetItems[activeWidget].settings["event" + i + "event_terms"] = widgetEvents[i][7];
+	        widgetItems[activeWidget].settings["event_year-" + i] = widgetEvents[i][0];
+	        widgetItems[activeWidget].settings["event_start_month-" + i] = widgetEvents[i][1];
+            widgetItems[activeWidget].settings["event_start_day-" + i] = widgetEvents[i][2];
+            widgetItems[activeWidget].settings["event_end_month-" + i] = widgetEvents[i][3];
+            widgetItems[activeWidget].settings["event_end_day-" + i] = widgetEvents[i][4];
+			widgetItems[activeWidget].settings["event_name-" + i] = widgetEvents[i][5];
+	        widgetItems[activeWidget].settings["event_semester-" + i] = widgetEvents[i][6];
+	        widgetItems[activeWidget].settings["event_terms-" + i] = JSON.stringify(widgetEvents[i][7]);
     	}
     }
 

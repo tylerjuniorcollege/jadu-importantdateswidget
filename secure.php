@@ -1,15 +1,15 @@
 <?php 
 	// Template for Semester Types.
-	$semesters = array(0 => 'Fall',
-					   1 => 'Winter',
-					   2 => 'Spring',
-					   3 => 'May',
-					   4 => 'Summer');
+	$semesters = array('Fall',
+					   'Winter',
+					   'Spring',
+					   'May',
+					   'Summer');
 	
 	$terms = array(
-		'16 Week',
-		'12 Week',
-		'8 Week'
+		0 => '16 Week',
+		1 => '12 Week',
+		2 => '8 Week'
 	);
 
 	$year = date("Y");
@@ -19,15 +19,15 @@
 	}
 
 	$months = array(
-		01 => 'January',
-		02 => 'February',
-		03 => 'March',
-		04 => 'April',
-		05 => 'May',
-		06 => 'June',
-		07 => 'July',
-		08 => 'August',
-		09 => 'September',
+		1 => 'January',
+		2 => 'February',
+		3 => 'March',
+		4 => 'April',
+		5 => 'May',
+		6 => 'June',
+		7 => 'July',
+		8 => 'August',
+		9 => 'September',
 		10 => 'October',
 		11 => 'November',
 		12 => 'December'
@@ -47,7 +47,7 @@
 		<tr>
 			<td colspan="2">
 				<table id="date_widget_table" class="form_table">
-					<tbody id="date_widget_dates" style="display: none;">
+					<tbody id="date_widget_dates" style="">
 						<tr><td class="label_cell">Pick Year/Semester:</td>
 							<td class="data_cell">
 								<select id="picker_year"><?php foreach($years as $year): ?>
@@ -132,7 +132,11 @@
 			<td class="data_cell"><?php foreach($terms as $termid => $term): ?>
 				<input type="checkbox" class="event_terms" id="term-<?php echo $termid; ?>" value="<?php echo $termid; ?>"><?php echo $term; ?> &nbsp;
 			<?php endforeach; ?></td>
-		</tr>	
+		</tr>
+		<tr>
+			<td class="label_cell">Highlight Event</td>
+			<td class="data_cell"><input type="checkbox" id="event_highlight" value="1"> Add a special highlight to the event listing.</td>
+		</tr>
 		<tr>
 			<td class="label_cell"><input type="button" onclick="deleteWidgetEvent()" value="Delete Event" id="widgetEventDelete" class="button" style="display: none;"></td>
 			<td class="data_cell">

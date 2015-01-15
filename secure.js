@@ -40,8 +40,9 @@ function addWidgetEvent ()
 	$("event_name").value = "";
     $("event_semester").value = "";
     $$(".event_terms").each(function(ele) {
-        ele.checked = 0;
+        ele.checked = false;
     });
+    $("event_highlight").value = "";
     $("tbl_widget_content").getElementsByTagName("tfoot")[0].style.display = "";
     $("date_widget_dates").style.display = "none";
     $("widgetEventDelete").style.display = "none";
@@ -70,6 +71,15 @@ function editWidgetEvent (widgetEventId)
     }
     if (widgetEvents[currentEventEdit][6] != null) {
         $("event_semester").value = widgetEvents[currentEventEdit][6];
+    }
+
+    // Make sure to check the boxes for the specific terms.
+    widgetEvents[currentEventEdit][7].each(function(termid) {
+        $("term-" + termid).checked = true;
+    });
+
+    if (widgetEvents[currentEventEdit][8] == true) {
+        $("event_highlight").checked = true;
     }
 
     $("tbl_widget_content").getElementsByTagName("tfoot")[0].style.display = "";
@@ -125,6 +135,10 @@ function saveWidgetEvent ()
                     eventTerms.push($(term).value);
             }
         });
+        var eventHighlight = false;
+        if ($("event_highlight").checked) {
+            eventHighlight = true;
+        }
 	    if (currentEventEdit == -1) {
 	        widgetEvents.push(new Array($("event_year").value, 
                                         $("event_start_month").value, 
@@ -133,11 +147,13 @@ function saveWidgetEvent ()
                                         $("event_end_day").value, 
                                         $("event_name").value, 
                                         $("event_semester").value, 
-                                        eventTerms));
+                                        eventTerms,
+                                        eventHighlight));
 	        // add new row
 	        addEventRow (widgetEvents.length - 1, widgetEvents[widgetEvents.length - 1]);
 	    }
 	    else {
+            // editing a current row 
             widgetEvents[currentEventEdit][0] = $("event_year").value;
 	        widgetEvents[currentEventEdit][1] = $("event_start_month").value;
             widgetEvents[currentEventEdit][2] = $("event_start_day").value;
@@ -146,6 +162,11 @@ function saveWidgetEvent ()
 			widgetEvents[currentEventEdit][5] = $("event_name").value;
 	        widgetEvents[currentEventEdit][6] = $("event_semester").value;
 			widgetEvents[currentEventEdit][7] = eventTerms;
+            widgetEvents[currentEventEdit][8] = eventHighlight;
+
+            // remove and re-add event row.
+            $("widgetEvent" + currentEventEdit).remove();
+            addEventRow (currentEventEdit, widgetEvents[currentEventEdit]);
 	    }
 	
 	    $("tbl_widget_content").getElementsByTagName("tfoot")[0].style.display = "none";
@@ -182,7 +203,6 @@ function addEventRow (EventID, EventObj)
     label_td.className = "label_cell";
     var term_label = [];
     EventObj[7].each(function(i) {
-        console.log(terms[i]);
         term_label.push(terms[i]);
     });
     label_td.innerHTML = term_label.join(', ');
@@ -209,6 +229,14 @@ function addEventRow (EventID, EventObj)
     aLink.innerHTML =  display + EventObj[5];
     aLink.title = display + EventObj[5];
     td.appendChild(aLink);
+
+    if (EventObj[8] == true) {
+        var strong_highlight = document.createElement("strong");
+        strong_highlight.innerHTML = " Highlighted";
+        td.appendChild(strong_highlight);
+        td.style.background = "#f0de84";
+    }
+
     tr.appendChild(td);
     var id = $(EventObj[0] + "_" + EventObj[6]);
     id.insert({'after': tr});
@@ -225,18 +253,17 @@ function fetchEvents ()
 {
     widgetEvents.clear();
     for (var wEvent in widgetItems[activeWidget].settings) {
-        if (wEvent.indexOf("event_year") >= 0) {
-            var arr_id = wEvent.substring(0, wEvent.lastIndexOf("-"));
-            var term_arr = JSON.parse(widgetItems[activeWidget].settings[arr_id.replace(/event_year/gi, "event_terms")]);
-            console.log(term_arr);
-            widgetEvents.push(new Array(widgetItems[activeWidget].settings[arr_id], 
-                                        widgetItems[activeWidget].settings[arr_id.replace(/event_year/gi, "event_start_month")], 
-                                        widgetItems[activeWidget].settings[arr_id.replace(/event_year/gi, "event_start_day")],
-                                        widgetItems[activeWidget].settings[arr_id.replace(/event_year/gi, "event_end_month")],
-                                        widgetItems[activeWidget].settings[arr_id.replace(/event_year/gi, "event_end_day")], 
-                                        widgetItems[activeWidget].settings[arr_id.replace(/event_year/gi, "event_name")], 
-                                        widgetItems[activeWidget].settings[arr_id.replace(/event_year/gi, "event_semester")], 
-                                        term_arr));
+        if (wEvent.indexOf("event_year-") >= 0 && wEvent.length > 10) {
+            var term_arr = widgetItems[activeWidget].settings[wEvent.replace(/event_year/gi, "event_terms")].split(',');
+            widgetEvents.push(new Array(widgetItems[activeWidget].settings[wEvent], 
+                                        widgetItems[activeWidget].settings[wEvent.replace(/event_year/gi, "event_start_month")], 
+                                        widgetItems[activeWidget].settings[wEvent.replace(/event_year/gi, "event_start_day")],
+                                        widgetItems[activeWidget].settings[wEvent.replace(/event_year/gi, "event_end_month")],
+                                        widgetItems[activeWidget].settings[wEvent.replace(/event_year/gi, "event_end_day")], 
+                                        widgetItems[activeWidget].settings[wEvent.replace(/event_year/gi, "event_name")], 
+                                        widgetItems[activeWidget].settings[wEvent.replace(/event_year/gi, "event_semester")],
+                                        term_arr,
+                                        widgetItems[activeWidget].settings[wEvent.replace(/event_year/gi, "event_highlight")]));
         }
     }	
 }
@@ -254,7 +281,8 @@ function commitWidgetEvents ()
             widgetItems[activeWidget].settings["event_end_day-" + i] = widgetEvents[i][4];
 			widgetItems[activeWidget].settings["event_name-" + i] = widgetEvents[i][5];
 	        widgetItems[activeWidget].settings["event_semester-" + i] = widgetEvents[i][6];
-	        widgetItems[activeWidget].settings["event_terms-" + i] = JSON.stringify(widgetEvents[i][7]);
+	        widgetItems[activeWidget].settings["event_terms-" + i] = widgetEvents[i][7].join(',');
+            widgetItems[activeWidget].settings["event_highlight-" + i] = widgetEvents[i][8];
     	}
     }
 
@@ -268,6 +296,7 @@ function commitWidgetEvents ()
     $("event_end_day").parentNode.removeChild($("event_end_day"));
     $("event_end_month").parentNode.removeChild($("event_end_month"));
     $("event_name").parentNode.removeChild($("event_name"));
+    $("event_highlight").parentNode.removeChild($("event_highlight"));
 }
 
 function filterRows() {

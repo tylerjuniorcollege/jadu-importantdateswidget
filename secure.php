@@ -122,9 +122,9 @@
 		<tr>
 			<td class="label_cell">Year</td>
 			<td class="data_cell"><select id="event_year">
-				<?php foreach($years as $year): ?>
-					<option value="<?php echo $year; ?>"><?php echo $year; ?></option>
-				<?php endforeach; ?>
+				<?php foreach($years as $year) {
+					printf('<option value="%s"%s>%s</option>', $year, ($year === $current_year ? ' selected' : ''), $year);
+				} ?>
 			</select></td>
 		</tr>
 		<tr>

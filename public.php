@@ -1,12 +1,5 @@
 <?php
 	//var_dump($settings);
-	
-	$year = date("Y");
-	$years = array();
-	for($i = 0; $i < 3; $i++) {
-		$years[] = ($year + $i);
-	}
-
 	$semesters = array(0 => 'Spring',
 					   1 => 'May',
 					   2 => 'Summer',
@@ -33,10 +26,26 @@
 		11 => 'November',
 		12 => 'December'
 	);
+
+	$date_count = array();
+
+	$year = date("Y");
+	$years = array();
+	for($i = -1; $i < 3; $i++) {
+		$y = ($year + $i);
+		$years[] = $y;
+
+		$date_count[$y] = array();
+		foreach($semester as $sem) {
+			$date_count[$y][strtolower($sem)] = 0;
+		}
+	}
+
+	// Midnight the day AFTER today.
+	$current_date = mktime(00, 00, 00, date("n"), (date("j") + 1));
 	
 	// formatting the "settings" so we can display the dates properly.
 	$dates = array();
-	$date_counts = array(); // This will be a helper to determine how many events exist
 
 	$date_fmt = '%s %s, %s';
 
@@ -65,14 +74,18 @@
 			}
 
 			if(!is_null($end_date)
-				&& $end_date < time()) {
+				&& $end_date < $current_date) {
 				// Skip this, as the event has already passed ...
 				continue;
 			}
 
-			if($start_date )
+			if($start_date < $current_date
+				&& is_null($end_date)) {
+				// We need to skip this if this is the only date and it is passed.
+				continue;
+			}
 
-			$dates[$eventId] = array(
+			$dates[$start_date] = array(
 				'event_year' => $val,
 				'event_start_month' => $settings['event_start_month-' . $eventId],
 				'event_start_day' => $settings['event_start_day-' . $eventId],
@@ -83,8 +96,26 @@
 				'event_terms' => explode(',', $settings['event_terms-' . $eventId]),
 				'event_highlight' => $settings['event_highlight-' . $eventId]
 			);
-		}
+			$date_count[$val][$settings['event_semester-' . $eventId]]++;
+
+		} else
+			continue;
 	}
 
-	var_dump($dates);
+	// Now we need to organize the array based on the dates.
+	ksort($dates);
+
+	// Here we should filter down the date_count array to get valid years to display in the form.
+	var_dump($date_count);
+
+	// Next, we display the form and the event dates based on the semester and year.
+	// Finally, for the filter form to work with terms, the dates will display 
 ?>
+<div id="filterForm">
+
+</div>
+<table id="importantDates">
+	<tbody>
+		<tr class="header filter_dates 2015_fall "></tr>
+	</tbody>
+</table>

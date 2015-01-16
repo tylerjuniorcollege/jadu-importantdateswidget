@@ -12,10 +12,10 @@
 		2 => '8 Week'
 	);
 
-	$year = date("Y");
+	$current_year = date("Y");
 	$years = array();
-	for($i = 0; $i < 3; $i++) {
-		$years[] = ($year + $i);
+	for($i = -1; $i < 3; $i++) {
+		$years[] = ($current_year + $i);
 	}
 
 	$months = array(
@@ -50,9 +50,9 @@
 					<tbody id="date_widget_dates" style="">
 						<tr><td class="label_cell">Pick Year/Semester:</td>
 							<td class="data_cell">
-								<select id="picker_year"><?php foreach($years as $year): ?>
-									<option value="<?php echo $year; ?>"><?php echo $year; ?></option>
-									<?php endforeach; ?>
+								<select id="picker_year"><?php foreach($years as $year) {
+									printf('<option value="%s"%s>%s</option>', $year, ($year === $current_year ? ' selected' : ''), $year);
+									} ?>
 								</select>
 								<select id="picker_semester"><?php foreach($semesters as $id => $semester): ?>
 									<option value="<?php echo strtolower($semester) ?>"><?php echo $semester ?></option>

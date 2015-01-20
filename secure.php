@@ -75,6 +75,14 @@
 		</tr>
 	</tbody>
    	<tfoot style="">
+   		<tr>
+			<td class="label_cell">Year</td>
+			<td class="data_cell"><select id="event_year">
+				<?php foreach($years as $year) {
+					printf('<option value="%s"%s>%s</option>', $year, ($year === $current_year ? ' selected' : ''), $year);
+				} ?>
+			</select></td>
+		</tr>
 		<tr>
 			<td class="label_cell">Event Start Month</td>
 			<td class="data_cell">
@@ -88,7 +96,11 @@
 		<tr>
 			<td class="label_cell">Event Start Day</td>
 			<td class="data_cell">
-				<input type="text" value="" id="event_start_day" class="field" size="3">
+				<select id="event_start_day">
+					<?php for($i = 1; $i <= 31; $i++): ?>
+					<option value="<?php echo $i; ?>"><?php echo $i; ?></option>
+					<?php endfor; ?>
+				</select>
 			</td>
 		</tr>
 		<tr>
@@ -104,7 +116,11 @@
 		<tr>
 			<td class="label_cell">Event End Day</td>
 			<td class="data_cell">
-				<input type="text" value="" id="event_end_day" class="field" size="3">
+				<select id="event_end_day">
+					<?php for($i = 1; $i <= 31; $i++): ?>
+					<option value="<?php echo $i; ?>"><?php echo $i; ?></option>
+					<?php endfor; ?>
+				</select>
 			</td>
 		</tr>
 		<tr>
@@ -117,14 +133,6 @@
 				<?php foreach($semesters as $id => $semester): ?>
 					<option value="<?php echo strtolower($semester); ?>"><?php echo $semester ?></option>
 				<?php endforeach; ?>
-			</select></td>
-		</tr>
-		<tr>
-			<td class="label_cell">Year</td>
-			<td class="data_cell"><select id="event_year">
-				<?php foreach($years as $year) {
-					printf('<option value="%s"%s>%s</option>', $year, ($year === $current_year ? ' selected' : ''), $year);
-				} ?>
 			</select></td>
 		</tr>
 		<tr>

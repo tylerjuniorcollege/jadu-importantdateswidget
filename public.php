@@ -8,7 +8,8 @@
 	$terms = array(
 		0 => '16 Week',
 		1 => '12 Week',
-		2 => '8 Week'
+		2 => '1st 8 Week',
+		3 => '2nd 8 Week'
 	);
 
 	$months = array(
@@ -86,7 +87,7 @@
 			continue;
 	}
 
-	$header_str = '<tr class="filter_dates %s header"><th colspan="2">%s Semester %s <span class="term">(All Terms)</span></th></colspan>';
+	$header_str = '<tr class="filter_dates %s header"><th colspan="2">%s Semester %s (<span class="term">All Terms</span>)</th></colspan>';
 	$event_str = '<tr class="filter_dates %s event"><td><strong>%s</strong></td><td>%s</td></tr>';
 
 	$option_str = '<option value="%s"%s>%s</option>';
@@ -97,8 +98,8 @@
 	// This will let us set what the current semester for the thing to display.
 	$current_semester = null;
 
-	foreach($date_arrange as $y => $semesters) {
-		foreach($semesters as $s => $events) {
+	foreach($date_arrange as $y => $event_semesters) {
+		foreach($event_semesters as $s => $events) {
 			// Sort the events from the first start date to the last.
 			ksort($events);
 
@@ -117,7 +118,6 @@
 			// We need to have something that will remove the date for an event that occurs on another previous date.
 			$prev_month = null;
 			$prev_day = null;
-			$prev_timestamp = null;
 			foreach($events as $start => $event) {
 				$classes = array($class);
 
@@ -148,7 +148,7 @@
 				}
 
 				// Adding the zebra highlighting on all even rows.
-				if($zebra %  2 === 0) {
+				if($zebra %  2 === 0 && $event['highlight'] !== '1') {
 					$classes[] = 'zebra';
 				}
 
@@ -157,23 +157,37 @@
 				$zebra++;
 				$prev_month = $event['start_month'];
 				$prev_day = $event['start_day'];
+
+				// Since the events are organized by year/semester and then date, this will present the first semester with the first event that occurs AFTER the current date.
+				if(is_null($current_semester) &&
+				   $current_date < $start) {
+					$current_semester = $s;
+				}
 			}
 		}
 	}
 ?>
 <div id="filterForm">
 	<span class="selection_dropdown">
-		<select id="filterYear">
+		<select class="filterSelect" id="filterYear">
 			<?php foreach($years as $y) {
 				printf($option_str, $y, ($y === $year ? ' selected' : ''), $y);
 				} ?>
 		</select>
 	</span>
 	<span class="selection_dropdown">
-		<select id="filterSemester">
+		<select class="filterSelect" id="filterSemester">
 			<?php foreach($semesters as $sem) {
-
-				} ?>
+				printf($option_str, strtolower($sem), ($current_semester == strtolower($sem) ? ' selected' : ''), $sem);
+			} ?>
+		</select>
+	</span>
+	<span class="selection_dropdown">
+		<select class="filterSelect" id="filterTerms">
+			<option value="all" selected>All Terms</option>
+			<?php foreach($terms as $tid => $term) {
+				printf($option_str, $tid, '', $term);
+			} ?>
 		</select>
 	</span>
 </div>
@@ -186,6 +200,3 @@
 		<?php print implode("\n", $display_events) ?>
 	</tbody>
 </table>
-<script type="text/javascript">
-
-</script>

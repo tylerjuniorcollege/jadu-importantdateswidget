@@ -9,7 +9,8 @@
 	$terms = array(
 		0 => '16 Week',
 		1 => '12 Week',
-		2 => '8 Week'
+		2 => '1st 8 Week',
+		3 => '2nd 8 Week'
 	);
 
 	$current_year = date("Y");

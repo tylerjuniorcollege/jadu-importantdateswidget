@@ -5,7 +5,8 @@ var currentEventEdit = -1;
 var terms = [
     '16 Week',
     '12 Week',
-    '8 Week'
+    '1st 8 Week',
+    '2nd 8 Week'
 ]
 
 var widgetEvents = new Array();

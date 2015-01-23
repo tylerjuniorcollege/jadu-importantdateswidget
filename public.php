@@ -5,26 +5,13 @@
 					   'Fall',
 					   'Winter');
 
+	$display_semesters = array('Fall', 'Winter', 'Spring', 'May', 'Summer');
+
 	$terms = array(
 		0 => '16 Week',
 		1 => '12 Week',
 		2 => '1st 8 Week',
 		3 => '2nd 8 Week'
-	);
-
-	$months = array(
-		1 => 'January',
-		2 => 'February',
-		3 => 'March',
-		4 => 'April',
-		5 => 'May',
-		6 => 'June',
-		7 => 'July',
-		8 => 'August',
-		9 => 'September',
-		10 => 'October',
-		11 => 'November',
-		12 => 'December'
 	);
 
 	$date_arrange = array();
@@ -50,7 +37,7 @@
 	// Midnight the day AFTER today.
 	$current_date = mktime(00, 00, 00, date("n"), (date("j") + 1));
 
-	$date_fmt = '%s %s, %s';
+	$date_fmt = 'F j';
 
 	// We need to get the settings.
 	if(!isset($_POST['preview'])) {
@@ -69,15 +56,12 @@
 			$eventId = substr($i, (strrpos($i, '-') + 1));
 
 			// We need to check to see if the event is still active ...
-			$start_date = sprintf($date_fmt, $settings['event_start_month-' . $eventId], $settings['event_start_day-' . $eventId], $val);
-			$start_date = strtotime($start_date);
+			$start_date = strtotime($settings['event_start_date-' . $eventId]);
 
 			$date_arrange[$val][$settings['event_semester-' . $eventId]][$start_date] = array(
 				'year' => $val,
-				'start_month' => $settings['event_start_month-' . $eventId],
-				'start_day' => $settings['event_start_day-' . $eventId],
-				'end_month' => $settings['event_end_month-' . $eventId],
-				'end_day' => $settings['event_end_day-' . $eventId],
+				'start_date' => $settings['event_start_date-' . $eventId],
+				'end_date' => $settings['event_end_date-' . $eventId],
 				'name' => $settings['event_name-' . $eventId],
 				'semester' => $settings['event_semester-' . $eventId],
 				'terms' => explode(',', $settings['event_terms-' . $eventId]),
@@ -116,25 +100,23 @@
 			$display_events[] = sprintf($header_str, $class, ucfirst($s), $y);
 
 			// We need to have something that will remove the date for an event that occurs on another previous date.
-			$prev_month = null;
-			$prev_day = null;
+			$prev_date = null;
 			foreach($events as $start => $event) {
 				$classes = array($class);
 
-				$event_date = $event['start_month'] . ' ' . $event['start_day'];
+				$event_date = date($date_fmt, $start);
 
-				if(strlen($event['end_month']) !== 0) { // This means that the event ends in the next month.
-					$event_date .= ' - ' . $event['end_month'] . ' ' . $event['end_day'];
-				} elseif(strlen($event['end_month']) === 0 && strlen($event['end_day']) < 0) {
-					$event_date .= ' - ' . $event['end_day'];
+				if(strlen($event['end_date']) > 2) {
+					$end_date = strtotime($event['end_date']);
+					$event_date .= ' - ';
+					if(date('n', $start) === date('n', $end_date)) {
+						$event_date .= date('j', $end_date);
+					} else { // NOT THE SAME MONTH
+						$event_date .= date($date_fmt, $end_date);
+					}
 				}
 
-				if($event['start_month'] === $prev_month &&
-				   $event['start_day'] === $prev_day &&
-				   strlen($event['end_month']) === 0 &&
-				   strlen($event['end_day']) === 0) {
-
-				   // This should mean that the event occurs on the same date as the previous day and it isn't a series of days ...
+				if($event['start_date'] == $prev_date && strlen($event['end_date']) > 2) { // Hide this because the previous date is already displayed from the previous event.
 					$event_date = null;
 				}
 
@@ -155,8 +137,7 @@
 				$display_events[] = sprintf($event_str, implode(' ', $classes), $event_date, $event['name']);
 
 				$zebra++;
-				$prev_month = $event['start_month'];
-				$prev_day = $event['start_day'];
+				$prev_date = $event['start_date'];
 
 				// Since the events are organized by year/semester and then date, this will present the first semester with the first event that occurs AFTER the current date.
 				if(is_null($current_semester) &&
@@ -168,28 +149,31 @@
 	}
 ?>
 <div id="filterForm">
-	<span class="selection_dropdown">
+	<div class="selection_dropdown">
+		<label for="filterYear">Year: </label>
 		<select class="filterSelect" id="filterYear">
 			<?php foreach($years as $y) {
 				printf($option_str, $y, ($y === $year ? ' selected' : ''), $y);
 				} ?>
 		</select>
-	</span>
-	<span class="selection_dropdown">
+	</div>
+	<div class="selection_dropdown">
+		<label for="filterSemester">Semester: </label>
 		<select class="filterSelect" id="filterSemester">
-			<?php foreach($semesters as $sem) {
+			<?php foreach($display_semesters as $sem) {
 				printf($option_str, strtolower($sem), ($current_semester == strtolower($sem) ? ' selected' : ''), $sem);
 			} ?>
 		</select>
-	</span>
-	<span class="selection_dropdown">
+	</div>
+	<div class="selection_dropdown">
+		<label for="filterTerms">Terms: </label>
 		<select class="filterSelect" id="filterTerms">
 			<option value="all" selected>All Terms</option>
 			<?php foreach($terms as $tid => $term) {
 				printf($option_str, $tid, '', $term);
 			} ?>
 		</select>
-	</span>
+	</div>
 </div>
 <table id="importantDates">
 	<colgroup>

@@ -18,29 +18,10 @@
 	for($i = -1; $i < 3; $i++) {
 		$years[] = ($current_year + $i);
 	}
-
-	$months = array(
-		1 => 'January',
-		2 => 'February',
-		3 => 'March',
-		4 => 'April',
-		5 => 'May',
-		6 => 'June',
-		7 => 'July',
-		8 => 'August',
-		9 => 'September',
-		10 => 'October',
-		11 => 'November',
-		12 => 'December'
-	);
 ?>
 <table class="form_table" id="tbl_widget_content">
 	<input type="hidden" value="<?php print $DOMAIN; ?>" id="DOMAIN" />
 	<tbody>
-		<!--<tr>
-			<td class="label_cell">Timer <em>(in seconds)</em></td>
-			<td class="data_cell"><input type="text" value="6.5" id="image_carousel_timer" class="field" size="12"></td>
-		</tr>-->
 		<tr>
 			<td class="label_cell"></td>
 			<td class="data_cell"><input type="button" onclick="addWidgetEvent();" class="button" value="Add Event"></td>
@@ -77,7 +58,15 @@
 	</tbody>
    	<tfoot style="">
    		<tr>
-			<td class="label_cell">Year</td>
+			<td class="label_cell">Semester <font color="red">*</font></td>
+			<td class="data_cell"><select id="event_semester">
+				<?php foreach($semesters as $id => $semester): ?>
+					<option value="<?php echo strtolower($semester); ?>"><?php echo $semester ?></option>
+				<?php endforeach; ?>
+			</select></td>
+		</tr>
+   		<tr>
+			<td class="label_cell">Semester Year <font color="red">*</font></td>
 			<td class="data_cell"><select id="event_year">
 				<?php foreach($years as $year) {
 					printf('<option value="%s"%s>%s</option>', $year, ($year === $current_year ? ' selected' : ''), $year);
@@ -85,59 +74,25 @@
 			</select></td>
 		</tr>
 		<tr>
-			<td class="label_cell">Event Start Month</td>
+			<td class="label_cell">Event Start Date <font color="red">*</font></td>
 			<td class="data_cell">
-				<select id="event_start_month">
-					<?php foreach($months as $m => $month): ?>
-					<option value="<?php echo $month; ?>"><?php echo $month; ?></option>
-					<?php endforeach; ?>
-				</select>
+				<input type="text" size="20" name="event_start_date" id="event_start_date" value="">
+				<img src="../images/cal.gif" width="16" height="16" onclick="return loadLightbox('calendar', 'lb2', 'mode=lb2&target=event_start_date');">
 			</td>
 		</tr>
 		<tr>
-			<td class="label_cell">Event Start Day</td>
+			<td class="label_cell">Event End Date</td>
 			<td class="data_cell">
-				<select id="event_start_day">
-					<?php for($i = 1; $i <= 31; $i++): ?>
-					<option value="<?php echo $i; ?>"><?php echo $i; ?></option>
-					<?php endfor; ?>
-				</select>
+				<input type="text" size="20" name="event_end_date" id="event_end_date" value="">
+				<img src="../images/cal.gif" width="16" height="16" onclick="return loadLightbox('calendar', 'lb2', 'mode=lb2&target=event_end_date');">
 			</td>
 		</tr>
 		<tr>
-			<td class="label_cell">Event End Month</td>
-			<td class="data_cell">
-				<select id="event_end_month">
-					<?php foreach($months as $m => $month): ?>
-					<option value="<?php echo $month; ?>"><?php echo $month; ?></option>
-					<?php endforeach; ?>
-				</select>
-			</td>
-		</tr>
-		<tr>
-			<td class="label_cell">Event End Day</td>
-			<td class="data_cell">
-				<select id="event_end_day">
-					<?php for($i = 1; $i <= 31; $i++): ?>
-					<option value="<?php echo $i; ?>"><?php echo $i; ?></option>
-					<?php endfor; ?>
-				</select>
-			</td>
-		</tr>
-		<tr>
-			<td class="label_cell">Event Name</td>
+			<td class="label_cell">Event Name <font color="red">*</font></td>
 			<td class="data_cell"><input type="text" value="" id="event_name" class="field" size="12"></td>
 		</tr>
 		<tr>
-			<td class="label_cell">Semester</td>
-			<td class="data_cell"><select id="event_semester">
-				<?php foreach($semesters as $id => $semester): ?>
-					<option value="<?php echo strtolower($semester); ?>"><?php echo $semester ?></option>
-				<?php endforeach; ?>
-			</select></td>
-		</tr>
-		<tr>
-			<td class="label_cell">Term</td>
+			<td class="label_cell">Term <font color="red">*</font></td>
 			<td class="data_cell"><?php foreach($terms as $termid => $term): ?>
 				<input type="checkbox" class="event_terms" id="term-<?php echo $termid; ?>" value="<?php echo $termid; ?>"><?php echo $term; ?> &nbsp;
 			<?php endforeach; ?></td>

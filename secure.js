@@ -222,7 +222,7 @@ function addEventRow (EventID, EventObj)
 
     var display = months[startDate.getMonth()] + " " + startDate.getDate() + ", " + startDate.getFullYear();
     if (endDate != null) {
-        display += " - " . months[endDate.getMonth()] + " " + endDate.getDate() + ", " + endDate.getFullYear();
+        display += " - " + months[endDate.getMonth()] + " " + endDate.getDate() + ", " + endDate.getFullYear();
     }
 
     display += " - " + EventObj[3];

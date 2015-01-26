@@ -92,6 +92,10 @@
 			<td class="data_cell"><input type="text" value="" id="event_name" class="field" size="12"></td>
 		</tr>
 		<tr>
+			<td class="label_cell">Event URL</td>
+			<td class="data_cell"><input type="text" value="" id="event_url" class="field" size="12"></td>
+		</tr>
+		<tr>
 			<td class="label_cell">Term <font color="red">*</font></td>
 			<td class="data_cell"><?php foreach($terms as $termid => $term): ?>
 				<input type="checkbox" class="event_terms" id="term-<?php echo $termid; ?>" value="<?php echo $termid; ?>"><?php echo $term; ?> &nbsp;

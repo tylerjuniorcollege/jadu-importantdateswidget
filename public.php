@@ -58,6 +58,12 @@
 			// We need to check to see if the event is still active ...
 			$start_date = strtotime($settings['event_start_date-' . $eventId]);
 
+			// Checking to see if the "Event_URL" has been set or is null.
+			$event_url = null;
+			if(isset($settings['event_url-' . $eventId])) {
+				$event_url = $settings['event_url-' . $eventId];
+			}
+
 			$date_arrange[$val][$settings['event_semester-' . $eventId]][$start_date] = array(
 				'year' => $val,
 				'start_date' => $settings['event_start_date-' . $eventId],
@@ -65,7 +71,8 @@
 				'name' => $settings['event_name-' . $eventId],
 				'semester' => $settings['event_semester-' . $eventId],
 				'terms' => explode(',', $settings['event_terms-' . $eventId]),
-				'highlight' => $settings['event_highlight-' . $eventId]
+				'highlight' => $settings['event_highlight-' . $eventId],
+				'url' => $event_url
 			);
 		} else
 			continue;
@@ -73,6 +80,7 @@
 
 	$header_str = '<tr class="filter_dates %s header"><th colspan="2">%s Semester %s (<span class="term">All Terms</span>)</th></colspan>';
 	$event_str = '<tr class="filter_dates %s event"><td><strong>%s</strong></td><td>%s</td></tr>';
+	$link_str = '<a href="%s" target="_blank">%s <img src="/images/newwindow.png" title="Open in a New Window" /></a>';
 
 	$option_str = '<option value="%s"%s>%s</option>';
 
@@ -134,7 +142,12 @@
 					$classes[] = 'zebra';
 				}
 
-				$display_events[] = sprintf($event_str, implode(' ', $classes), $event_date, $event['name']);
+				$event_name = $event['name'];
+				if(strlen($event['url']) > 0) {
+					$event_name = sprintf($link_str, $event['url'], $event['name']);
+				}
+
+				$display_events[] = sprintf($event_str, implode(' ', $classes), $event_date, $event_name);
 
 				$zebra++;
 				$prev_date = $event['start_date'];

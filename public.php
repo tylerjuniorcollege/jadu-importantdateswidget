@@ -148,6 +148,27 @@
 		}
 	}
 ?>
+
+<style type="text/css">
+    .selection_dropdown {
+         margin-bottom: 5px;
+     }
+    .selection_dropdown label { 
+         margin: 0 !important;
+         text-align: left !important;
+         width: 50px !important;
+     }
+     .filterSelect { 
+         width: 150px; 
+     }
+     #filterForm {
+         margin-bottom: 8px;
+     }
+	#importantDates td:first-child { 
+         text-align: right; 
+     }
+</style>
+
 <div id="filterForm">
 	<div class="selection_dropdown">
 		<label for="filterYear">Year: </label>

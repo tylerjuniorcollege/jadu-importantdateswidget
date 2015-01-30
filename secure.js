@@ -2,12 +2,21 @@ if ($("tbl_widget_content").getElementsByTagName("tfoot")[0]) {
 	$("tbl_widget_content").getElementsByTagName("tfoot")[0].style.display = "none";
 }	
 var currentEventEdit = -1;
-var terms = [
-    '16 Week',
-    '12 Week',
-    '1st 8 Week',
-    '2nd 8 Week'
-];
+var terms = [];
+terms['term-16'] = '16-Week';
+terms['term-12'] = '12-Week';
+terms['term-8-1'] = '1st 8-Week';
+terms['term-8-2'] = '2nd 8-Week';
+terms['summer-term-1'] = 'Summer I';
+terms['summer-term-2'] = 'Summer II';
+terms['summer-term-mid'] = 'Mid-Summer';
+terms['summer-term-long'] = 'Summer Long';
+
+var old_terms = [];
+old_terms[0] = 'term-16';
+old_terms[1] = 'term-12';
+old_terms[2] = 'term-8-1';
+old_terms[3] = 'term-8-2';
 
 var months = [];
 months[0] = "January";
@@ -43,6 +52,27 @@ fetchEvents();
 iterateEvents();
 $('date_widget_dates').show();
 filterRows(true);
+switchTerms();
+
+$("event_semester").observe('change', switchTerms);
+
+function hideTerms() {
+    $$(".term_display").each(Element.hide);
+}
+
+function switchTerms() 
+{
+    hideTerms();
+    $("term_row").show();
+    if ($("event_semester").value == "summer") {
+        $$(".term_display.summer").each(Element.show);
+    } else if ($("event_semester").value == "fall" || $("event_semester").value == "spring") {
+        $$(".term_display.regular").each(Element.show);
+    } else {
+        // Hide the row.
+        $("term_row").hide();
+    }
+}
 
 function addWidgetEvent ()
 {
@@ -83,8 +113,15 @@ function editWidgetEvent (widgetEventId)
 
     // Make sure to check the boxes for the specific terms.
     widgetEvents[currentEventEdit][5].each(function(termid) {
-        $("term-" + termid).checked = true;
+        if (termid.length < 2 && termid.length > 0) {
+            termid = old_terms[termid];
+        }
+        if (termid.length > 0) {
+            $(termid).checked = true;
+        }
     });
+
+    switchTerms();
 
     if (widgetEvents[currentEventEdit][6] == true) {
         $("event_highlight").checked = true;
@@ -126,6 +163,8 @@ function saveWidgetEvent ()
     var checked = false;
     $$(".event_terms").each(function(term) {
         if ($(term).checked) {
+            checked = true;
+        } else if ($("event_semester").value == 'winter' || $("event_semester").value == 'may') {
             checked = true;
         }
     });
@@ -178,7 +217,8 @@ function saveWidgetEvent ()
             $("widgetEvent" + currentEventEdit).remove();
             addEventRow (currentEventEdit, widgetEvents[currentEventEdit]);
 	    }
-	
+
+	   filterRows();
 	    $("tbl_widget_content").getElementsByTagName("tfoot")[0].style.display = "none";
 	    $("date_widget_dates").style.display = "";
 	}
@@ -213,6 +253,9 @@ function addEventRow (EventID, EventObj)
     label_td.className = "label_cell";
     var term_label = [];
     EventObj[5].each(function(i) {
+        if (i.length < 2) {
+            i = old_terms[i];
+        }
         term_label.push(terms[i]);
     });
     label_td.innerHTML = term_label.join(', ');
@@ -240,7 +283,7 @@ function addEventRow (EventID, EventObj)
 
     display += " - " + EventObj[3];
 
-    if (EventObj[7] != null) {
+    if (EventObj[7] != null && EventObj[7].length > 1) {
         display += ' <img src="/images/newwindow.png" title="Link Added" />';
     }
 
@@ -309,7 +352,7 @@ function commitWidgetEvents ()
 
     $("event_semester").parentNode.removeChild($("event_semester"));
 	$$(".event_terms").each(function(ele) {
-        var ele_id = "term-" + ele.value;
+        var ele_id = ele.value;
         ele.parentNode.removeChild($(ele_id));
     });
     $("event_start_date").parentNode.removeChild($("event_start_date"));
@@ -317,6 +360,15 @@ function commitWidgetEvents ()
     $("event_name").parentNode.removeChild($("event_name"));
     $("event_highlight").parentNode.removeChild($("event_highlight"));
     $("event_url").parentNode.removeChild($("event_url"));
+    $("event_year").parentNode.removeChild($("event_year"));
+}
+
+function cleanWidgetItemsArray() {
+    for (var wEvent in widgetItems[activeWidget].settings) {
+        if (wEvent.indexOf('event_') > 0) {
+            console.log(wEvent);
+        }
+    }
 }
 
 function filterRows(filterSem) {
@@ -324,6 +376,7 @@ function filterRows(filterSem) {
     var semester;
     if(filterSem) {
         semester = $("filterSemester").value;
+        $("picker_semester").value = semester;
     } else {
         semester = $("picker_semester").value;
     }

@@ -7,16 +7,20 @@
 					   'Summer');
 	
 	$terms = array(
-		0 => '16 Week',
-		1 => '12 Week',
-		2 => '1st 8 Week',
-		3 => '2nd 8 Week'
+		'term-16'  => '16-Week',
+		'term-12'  => '12-Week',
+		'term-8-1' => '1st 8-Week',
+		'term-8-2' => '2nd 8-Week',
+		'summer-term-1' => 'Summer I',
+		'summer-term-2' => 'Summer II',
+		'summer-term-mid' => 'Mid-Summer',
+		'summer-term-long' => 'Summer Long'
 	);
 
 	$current_year = date("Y");
 	$years = array();
 	for($i = -1; $i < 3; $i++) {
-		$years[] = ($current_year + $i);
+		$years[] = (string) ($current_year + $i);
 	}
 ?>
 <table class="form_table" id="tbl_widget_content">
@@ -33,7 +37,7 @@
 						<tr><td class="label_cell">Pick Year/Semester:</td>
 							<td class="data_cell">
 								<select id="picker_year"><?php foreach($years as $year) {
-									printf('<option value="%s"%s>%s</option>', $year, ($year === $current_year ? ' selected' : ''), $year);
+									printf('<option value="%s"%s>%s</option>', $year, ($year == $current_year ? ' selected' : ''), $year);
 									} ?>
 								</select>
 								<select id="picker_semester"><?php foreach($semesters as $id => $semester): ?>
@@ -69,7 +73,7 @@
 			<td class="label_cell">Semester Year <font color="red">*</font></td>
 			<td class="data_cell"><select id="event_year">
 				<?php foreach($years as $year) {
-					printf('<option value="%s"%s>%s</option>', $year, ($year === $current_year ? ' selected' : ''), $year);
+					printf('<option value="%s"%s>%s</option>', $year, ($year == $current_year ? ' selected' : ''), $year);
 				} ?>
 			</select></td>
 		</tr>
@@ -95,11 +99,17 @@
 			<td class="label_cell">Event URL</td>
 			<td class="data_cell"><input type="text" value="" id="event_url" class="field" size="12"></td>
 		</tr>
-		<tr>
+		<tr id="term_row">
 			<td class="label_cell">Term <font color="red">*</font></td>
-			<td class="data_cell"><?php foreach($terms as $termid => $term): ?>
-				<input type="checkbox" class="event_terms" id="term-<?php echo $termid; ?>" value="<?php echo $termid; ?>"><?php echo $term; ?> &nbsp;
-			<?php endforeach; ?></td>
+			<td class="data_cell"><?php foreach($terms as $termid => $term) {
+					$term_str = '<span class="term_display %s"><input type="checkbox" class="event_terms" id="%s" value="%s"> %s </span>';
+					$term_class = 'regular';
+					if(strpos($termid, 'summer') !== false) {
+						$term_class = 'summer';
+					}
+					printf($term_str, $term_class, $termid, $termid, $term);
+				} ?>
+			</td>
 		</tr>
 		<tr>
 			<td class="label_cell">Highlight Event</td>

@@ -157,11 +157,6 @@
 				continue; // Skip this if there are no events.
 			}
 
-
-
-			// Zebra Counter.
-			$zebra = 1;
-
 			$display_events[] = sprintf($header_str, $class, ucfirst($s), $y);
 
 			// We need to have something that will remove the date for an event that occurs on another previous date.
@@ -180,10 +175,12 @@
 					} else { // NOT THE SAME MONTH
 						$event_date .= date($date_fmt, $end_date);
 					}
+				} else {
+					$end_date = null;
 				}
 
 				if($event['start_date'] == $prev_start && 
-				   $event['end_date'] == $prev_end) { // Hide this because the previous date is already displayed from the previous event.
+				   $end_date == $prev_end) { // Hide this because the previous date is already displayed from the previous event.
 					$event_date = null;
 				}
 
@@ -207,21 +204,21 @@
 					$classes[] = 'highlightRow';
 				}
 
-				// Adding the zebra highlighting on all even rows.
-				if($zebra %  2 === 0 && $event['highlight'] !== '1') {
-					$classes[] = 'zebra';
-				}
-
 				$event_name = $event['name'];
 				if(strlen($event['url']) > 0) {
 					$event_name = sprintf($link_str, $event['url'], $event['name']);
 				}
 
-				$display_events[] = sprintf($event_str, implode(' ', $classes), $event_date, $event_name, $event_terms);
+				if(!is_null($end_date) && $end_date < $prev_end) {
+					$splice = sprintf($event_str, implode(' ', $classes), $event_date, $event_name, $event_terms);
+					$last = count($display_events);
+					array_splice($display_events, ($last - 1), 0, $splice);
+				} else {
+					$display_events[] = sprintf($event_str, implode(' ', $classes), $event_date, $event_name, $event_terms);
 
-				$zebra++;
-				$prev_start = $event['start_date'];
-				$prev_end = $event['end_date'];
+					$prev_start = $event['start_date'];
+					$prev_end = $end_date;
+				}
 
 				// Since the events are organized by year/semester and then date, this will present the first semester with the first event that occurs AFTER the current date.
 				if(is_null($current_semester) &&
